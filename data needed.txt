@@ -1,0 +1,57 @@
+🧾 1. Applicant Information
+Basic information about the business owner or representative:
+Full Name of Applicant / Business Owner
+Complete Home Address
+Contact Number
+Email Address
+TIN (Tax Identification Number)
+Citizenship / Gender (optional, depending on LGU)
+
+🏢 2. Business Information
+Details about your business to identify what kind of activity is being proposed:
+Business / Trade Name
+Type of Business (e.g. sari-sari store, restaurant, hardware, etc.)
+Nature / Line of Business (specific activity)
+Business Address (exact location of the establishment)
+Ownership Type (Single Proprietorship, Partnership, Corporation, Cooperative)
+Area Occupied (in square meters)
+Floor Level (if in a building or multi-level property)
+
+📍 3. Property / Location Details
+Needed to verify compliance with zoning:
+Lot Number / Block Number / Survey Number
+Street / Barangay / City or Municipality
+Type of Occupancy (Owned, Rented, or Leased)
+Name of Lot Owner (if not the applicant)
+Land Use Classification (e.g. Commercial, Residential, Industrial — to be verified by zoning office)
+Zoning Classification (if available)
+
+📜 4. Project Description
+To help the zoning office understand your setup:
+Description of Business Operation
+Building Type (Concrete, Mixed, Wooden, etc.)
+Number of Employees
+Expected Date of Operation
+Project Cost / Estimated Investment
+
+🗂️ 5. Required Attachments (usually submitted with the form)
+Most LGUs will require you to attach:
+Location Sketch or Vicinity Map
+Barangay Clearance for Business
+Proof of Ownership or Lease Contract
+Building / Occupancy Permit (if applicable)
+Fire Safety Inspection Certificate (if existing)
+DTI / SEC / CDA Registration
+Tax Declaration / Title (for proof of land ownership)
+Business Plan or Layout (sometimes requested)
+
+✍️ 6. Certification / Declaration Section
+At the bottom of the form:
+Applicant’s Signature over Printed Name
+Date of Application
+Signature of Zoning Officer (for office use)
+Remarks / Evaluation Section (for zoning office)
+💡 Optional (depending on LGU):
+Coordinates (if the LGU uses GIS for zoning)
+Environmental clearance (for certain types of businesses)
+Adjoining property owners (for special permits)
