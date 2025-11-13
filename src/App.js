@@ -1,259 +1,329 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
-  Box,
+  TextField,
+  MenuItem,
+  Grid,
   Paper,
   Typography,
-  TextField,
   Button,
-  Grid,
-  FormControl,
-  FormLabel,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
-  MenuItem,
-  Snackbar,
-  Alert,
+  Box,
+  Divider,
 } from "@mui/material";
+import axios from "axios";
 
 export default function App() {
-  const {
-    handleSubmit,
-    control,
-    reset,
-    formState: { errors, isSubmitting },
-  } = useForm({
-    defaultValues: {
-      fullName: "",
-      address: "",
-      contactNumber: "",
-      email: "",
-      tin: "",
-      citizenship: "",
-      gender: "",
-    },
-  });
+  const [countries, setCountries] = useState([]);
 
-  const [openSnack, setOpenSnack] = useState(false);
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const response = await axios.get(
+          "https://api.first.org/data/v1/countries"
+        );
+        setCountries(Object.values(response.data.data));
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchCountries();
+  }, []);
 
-  const onSubmit = async (data) => {
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      console.log("Submitted data:", data);
-      setOpenSnack(true);
-      reset();
-    } catch (error) {
-      console.error(error);
-    }
+  const defaultValues = {
+    gender: "Male",
+    ownershipType: "Single Proprietorship",
+    typeOfOccupancy: "Owned",
+    barangay: "Biasong",
+    city: "City of Talisay",
+    citizenship: "Philippines",
   };
 
-  return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        p: 2,
-        bgcolor: "background.default",
-      }}
-    >
-      <Paper sx={{ maxWidth: 800, width: "100%", p: 4 }} elevation={3}>
-        <Typography variant="h5" gutterBottom>
-          Locational Clearance — Business Registration
-        </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-          Please fill out the applicant details below. Fields marked with * are
-          required.
-        </Typography>
+  const { handleSubmit, control, reset, setValue, watch } = useForm({
+    mode: "onBlur",
+    defaultValues,
+  });
 
-        <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)}>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
-              <Controller
-                name="fullName"
-                control={control}
-                rules={{ required: "Full name is required" }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Full name *"
-                    fullWidth
-                    error={!!errors.fullName}
-                    helperText={errors.fullName?.message}
-                  />
-                )}
-              />
-            </Grid>
+  const uploadedFiles = watch("requirements") || [];
 
-            <Grid item xs={12} md={6}>
-              <Controller
-                name="contactNumber"
-                control={control}
-                rules={{
-                  required: "Contact number is required",
-                  pattern: {
-                    value: /^[0-9+\-() ]{7,20}$/,
-                    message: "Enter a valid contact number",
-                  },
-                }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Contact number *"
-                    fullWidth
-                    error={!!errors.contactNumber}
-                    helperText={errors.contactNumber?.message}
-                  />
-                )}
-              />
-            </Grid>
+  const onSubmit = (data) => {
+    console.log(data);
+    alert("Form submitted successfully!");
+  };
 
-            <Grid item xs={12}>
-              <Controller
-                name="address"
-                control={control}
-                rules={{ required: "Home address is required" }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Complete home address *"
-                    fullWidth
-                    multiline
-                    minRows={2}
-                    error={!!errors.address}
-                    helperText={errors.address?.message}
-                  />
-                )}
-              />
-            </Grid>
+  const cleanInput = (value) => value?.trim().replace(/\./g, "") || "";
 
-            <Grid item xs={12} md={6}>
-              <Controller
-                name="email"
-                control={control}
-                rules={{
-                  required: "Email is required",
-                  pattern: {
-                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                    message: "Enter a valid email",
-                  },
-                }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Email address *"
-                    fullWidth
-                    error={!!errors.email}
-                    helperText={errors.email?.message}
-                  />
-                )}
-              />
-            </Grid>
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
+    setValue("requirements", files, { shouldValidate: true });
+  };
 
-            <Grid item xs={12} md={6}>
-              <Controller
-                name="tin"
-                control={control}
-                rules={{
-                  required: "TIN is required",
-                  pattern: {
-                    value: /^[0-9]{9,12}$/,
-                    message: "Enter a valid TIN (numbers only)",
-                  },
-                }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="TIN (Tax Identification Number) *"
-                    fullWidth
-                    error={!!errors.tin}
-                    helperText={errors.tin?.message}
-                  />
-                )}
-              />
-            </Grid>
+  const barangayOptions = [
+    "Biasong",
+    "Bulacao",
+    "Cadulawan",
+    "Camp IV",
+    "Cansojong",
+    "Dumlog",
+    "Jaclupan",
+    "Lagtang",
+    "Lawaan I",
+    "Lawaan II",
+    "Lawaan III",
+    "Linao",
+    "Maghaway",
+    "Manipis",
+    "Mohon",
+    "Poblacion",
+    "Pooc",
+    "San Isidro",
+    "San Roque",
+    "Tabunok",
+    "Tangke",
+    "Tapul",
+  ];
 
-            <Grid item xs={12} md={6}>
-              <Controller
-                name="citizenship"
-                control={control}
-                rules={{ required: "Citizenship is required" }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Citizenship *"
-                    select
-                    fullWidth
-                    error={!!errors.citizenship}
-                    helperText={errors.citizenship?.message}
-                  >
-                    <MenuItem value="Philippine">Philippine</MenuItem>
-                    <MenuItem value="Dual">Dual / Dual Citizenship</MenuItem>
-                    <MenuItem value="Foreign">Foreign</MenuItem>
-                  </TextField>
-                )}
-              />
-            </Grid>
+  const sections = {
+    "Personal Information": [
+      { name: "firstName", label: "First Name", required: true },
+      { name: "middleName", label: "Middle Name" },
+      { name: "lastName", label: "Last Name", required: true },
+      { name: "suffix", label: "Suffix" },
+      {
+        name: "gender",
+        label: "Gender",
+        type: "select",
+        options: ["Male", "Female", "Other"],
+        required: true,
+      },
+      { name: "street", label: "Street", required: true },
+      {
+        name: "barangay",
+        label: "Barangay",
+        type: "select",
+        options: barangayOptions,
+        required: true,
+      },
+      { name: "city", label: "City", required: true },
+      {
+        name: "contactNumber",
+        label: "Contact Number",
+        required: true,
+        pattern: /^[0-9]{10,11}$/,
+      },
+      {
+        name: "emailAddress",
+        label: "Email Address",
+        required: true,
+        pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+      },
+      { name: "tin", label: "TIN" },
+      {
+        name: "citizenship",
+        label: "Citizenship",
+        type: "select",
+        options: countries.map((country) => country.country),
+        required: true,
+      },
+    ],
 
-            <Grid item xs={12} md={6}>
-              <FormControl component="fieldset" fullWidth>
-                <FormLabel component="legend">Gender (optional)</FormLabel>
-                <Controller
-                  name="gender"
-                  control={control}
-                  render={({ field }) => (
-                    <RadioGroup row {...field}>
-                      <FormControlLabel
-                        value="male"
-                        control={<Radio />}
-                        label="Male"
-                      />
-                      <FormControlLabel
-                        value="female"
-                        control={<Radio />}
-                        label="Female"
-                      />
-                      <FormControlLabel
-                        value="prefer_not"
-                        control={<Radio />}
-                        label="Prefer not to say"
-                      />
-                    </RadioGroup>
-                  )}
-                />
-              </FormControl>
-            </Grid>
+    "Business Information": [
+      { name: "businessName", label: "Business / Trade Name", required: true },
+      { name: "typeOfBusiness", label: "Type of Business" },
+      { name: "natureOfBusiness", label: "Nature / Line of Business" },
+      { name: "businessAddress", label: "Business Address" },
+      {
+        name: "ownershipType",
+        label: "Ownership Type",
+        type: "select",
+        options: [
+          "Single Proprietorship",
+          "Partnership",
+          "Corporation",
+          "Cooperative",
+          "Others",
+        ],
+      },
+      {
+        name: "areaOccupied",
+        label: "Area Occupied (sqm)",
+        type: "number",
+        min: 0,
+      },
+      { name: "floorLevel", label: "Floor Level" },
+    ],
 
-            <Grid item xs={12} sx={{ display: "flex", gap: 1 }}>
-              <Button type="submit" variant="contained" disabled={isSubmitting}>
-                {isSubmitting ? "Submitting..." : "Submit Application"}
-              </Button>
+    "Property Details": [
+      { name: "lotNumber", label: "Lot / Block Number" },
+      { name: "propertyStreet", label: "Street" },
+      { name: "propertyBarangay", label: "Barangay" },
+      { name: "propertyCity", label: "City" },
+      {
+        name: "typeOfOccupancy",
+        label: "Type of Occupancy",
+        type: "select",
+        options: ["Owned", "Rented", "Leased"],
+      },
+      { name: "lotOwner", label: "Name of Lot Owner" },
+      {
+        name: "landUseClassification",
+        label:
+          "Land Use Classification (e.g. Commercial, Residential, Industrial)",
+      },
+      { name: "zoningClassification", label: "Zoning Classification" },
+      {
+        name: "numEmployees",
+        label: "Number of Employees",
+        type: "number",
+        min: 0,
+      },
+      {
+        name: "projectCost",
+        label: "Project Cost / Investment",
+        type: "number",
+        min: 0,
+      },
+    ],
+  };
 
-              <Button
-                type="button"
-                variant="outlined"
-                onClick={() => reset()}
-                disabled={isSubmitting}
+  const formatTIN = (value) => {
+    const numbers = value.replace(/\D/g, "").slice(0, 12); // only digits, max 12
+    return numbers.replace(/(\d{3})(?=\d)/g, "$1-").replace(/-$/, "");
+  };
+
+  const formatNumberWithCommas = (value) => {
+    if (!value) return "";
+    const num = value.toString().replace(/,/g, "");
+    return num.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
+  const renderField = (field) => (
+    <Grid item xs={12} sm={6} md={2.4} key={field.name}>
+      <Controller
+        name={field.name}
+        control={control}
+        rules={{
+          required: field.required && `${field.label} is required`,
+          pattern: field.pattern && {
+            value: field.pattern,
+            message: `Invalid ${field.label}`,
+          },
+        }}
+        render={({ field: f, fieldState }) => {
+          const handleChange = (e) => {
+            let value = e.target.value;
+
+            if (field.name === "tin") {
+              value = formatTIN(value);
+            } else if (field.name === "projectCost") {
+              value = formatNumberWithCommas(value);
+            }
+
+            f.onChange(value);
+          };
+
+          const handleBlur = (e) => {
+            if (field.type !== "number" && field.type !== "select") {
+              const cleaned = cleanInput(e.target.value);
+              f.onChange(cleaned);
+            }
+          };
+
+          if (field.type === "select") {
+            return (
+              <TextField
+                {...f}
+                select
+                label={field.label + (field.required ? " *" : "")}
+                fullWidth
+                size="small"
+                error={!!fieldState.error}
+                helperText={fieldState.error?.message}
               >
-                Reset
-              </Button>
+                {field.options.map((opt) => (
+                  <MenuItem key={opt} value={opt}>
+                    {opt}
+                  </MenuItem>
+                ))}
+              </TextField>
+            );
+          }
+
+          return (
+            <TextField
+              {...f}
+              label={field.label + (field.required ? " *" : "")}
+              fullWidth
+              size="small"
+              type={field.type === "number" ? "text" : "text"} // keep text for commas
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={!!fieldState.error}
+              helperText={fieldState.error?.message}
+            />
+          );
+        }}
+      />
+    </Grid>
+  );
+
+  return (
+    <Paper sx={{ p: 4, maxWidth: 1200, mx: "auto", my: 4 }}>
+      <Typography variant="h5" fontWeight={600} gutterBottom>
+        Registration Form
+      </Typography>
+
+      <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
+        {Object.entries(sections).map(([title, fields]) => (
+          <Box key={title} sx={{ mt: 3 }}>
+            <Typography variant="h6" gutterBottom>
+              {title}
+            </Typography>
+            <Divider sx={{ mb: 2 }} />
+            <Grid container spacing={2}>
+              {fields.map(renderField)}
             </Grid>
-          </Grid>
+          </Box>
+        ))}
+
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h6" gutterBottom>
+            File Requirements
+          </Typography>
+          <Divider sx={{ mb: 2 }} />
+          <Button variant="contained" component="label">
+            Upload Files
+            <input
+              type="file"
+              hidden
+              multiple
+              accept="image/*,application/pdf"
+              onChange={handleFileChange}
+            />
+          </Button>
+
+          {uploadedFiles.length > 0 && (
+            <Box sx={{ mt: 2 }}>
+              <Typography variant="body2" fontWeight={500}>
+                Uploaded Files:
+              </Typography>
+              <ul style={{ margin: 0, paddingLeft: "20px" }}>
+                {uploadedFiles.map((file, index) => (
+                  <li key={index}>{file.name}</li>
+                ))}
+              </ul>
+            </Box>
+          )}
         </Box>
 
-        <Snackbar
-          open={openSnack}
-          autoHideDuration={3000}
-          onClose={() => setOpenSnack(false)}
-          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-        >
-          <Alert severity="success" sx={{ width: "100%" }}>
-            Application submitted (mock). Check console for data.
-          </Alert>
-        </Snackbar>
-      </Paper>
-    </Box>
+        <Box sx={{ mt: 4, display: "flex", gap: 2 }}>
+          <Button type="submit" variant="contained">
+            Submit
+          </Button>
+          <Button type="button" variant="outlined" onClick={() => reset()}>
+            Reset
+          </Button>
+        </Box>
+      </Box>
+    </Paper>
   );
 }

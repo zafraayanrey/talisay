@@ -1,37 +1,34 @@
-🧾 1. Applicant Information
-Basic information about the business owner or representative:
-Full Name of Applicant / Business Owner
-Complete Home Address
+First Name
+Middle Name
+Last Name
+Suffix
+Gender
+Street
+Barangay
+City
 Contact Number
 Email Address
-TIN (Tax Identification Number)
-Citizenship / Gender (optional, depending on LGU)
+TIN
+Citizenship 
 
-🏢 2. Business Information
-Details about your business to identify what kind of activity is being proposed:
 Business / Trade Name
-Type of Business (e.g. sari-sari store, restaurant, hardware, etc.)
-Nature / Line of Business (specific activity)
-Business Address (exact location of the establishment)
-Ownership Type (Single Proprietorship, Partnership, Corporation, Cooperative)
+Type of Business
+Nature / Line of Business
+Business Address
+Ownership Type (Single Proprietorship, Partnership, Corporation, Cooperative, others)
 Area Occupied (in square meters)
-Floor Level (if in a building or multi-level property)
+Floor Level
 
-📍 3. Property / Location Details
-Needed to verify compliance with zoning:
-Lot Number / Block Number / Survey Number
-Street / Barangay / City or Municipality
+Lot Number / Block Number
+Street
+Barangay
+City
 Type of Occupancy (Owned, Rented, or Leased)
-Name of Lot Owner (if not the applicant)
+Name of Lot Owner
 Land Use Classification (e.g. Commercial, Residential, Industrial — to be verified by zoning office)
-Zoning Classification (if available)
+Zoning Classification
 
-📜 4. Project Description
-To help the zoning office understand your setup:
-Description of Business Operation
-Building Type (Concrete, Mixed, Wooden, etc.)
-Number of Employees
-Expected Date of Operation
+Number of Employees (e.g. male and female)
 Project Cost / Estimated Investment
 
 🗂️ 5. Required Attachments (usually submitted with the form)
