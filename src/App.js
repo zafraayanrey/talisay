@@ -12,9 +12,21 @@ import {
 } from "@mui/material";
 import axios from "axios";
 
-export default function App() {
-  const [countries, setCountries] = useState([]);
+import { barangayOptions, defaultValues, getSections } from "./arrays/array";
+import { cleanInput } from "./helpers/cleanInput";
+import { formatTin } from "./helpers/formatTin";
+import { formatNumber } from "./helpers/formatNumber";
 
+function App() {
+  const [countries, setCountries] = useState([]);
+  const { handleSubmit, control, reset, setValue, watch } = useForm({
+    mode: "onBlur",
+    defaultValues,
+  });
+
+  const uploadedFiles = watch("requirements") || [];
+
+  // Fetch countries from API
   useEffect(() => {
     const fetchCountries = async () => {
       try {
@@ -29,172 +41,18 @@ export default function App() {
     fetchCountries();
   }, []);
 
-  const defaultValues = {
-    gender: "Male",
-    ownershipType: "Single Proprietorship",
-    typeOfOccupancy: "Owned",
-    barangay: "Biasong",
-    city: "City of Talisay",
-    citizenship: "Philippines",
-  };
+  // Build sections dynamically with fetched countries
+  const sections = getSections(countries);
 
-  const { handleSubmit, control, reset, setValue, watch } = useForm({
-    mode: "onBlur",
-    defaultValues,
-  });
-
-  const uploadedFiles = watch("requirements") || [];
-
-  const onSubmit = (data) => {
+  function onSubmit(data) {
     console.log(data);
     alert("Form submitted successfully!");
-  };
+  }
 
-  const cleanInput = (value) => value?.trim().replace(/\./g, "") || "";
-
-  const handleFileChange = (e) => {
+  function handleFileChange(e) {
     const files = Array.from(e.target.files);
     setValue("requirements", files, { shouldValidate: true });
-  };
-
-  const barangayOptions = [
-    "Biasong",
-    "Bulacao",
-    "Cadulawan",
-    "Camp IV",
-    "Cansojong",
-    "Dumlog",
-    "Jaclupan",
-    "Lagtang",
-    "Lawaan I",
-    "Lawaan II",
-    "Lawaan III",
-    "Linao",
-    "Maghaway",
-    "Manipis",
-    "Mohon",
-    "Poblacion",
-    "Pooc",
-    "San Isidro",
-    "San Roque",
-    "Tabunok",
-    "Tangke",
-    "Tapul",
-  ];
-
-  const sections = {
-    "Personal Information": [
-      { name: "firstName", label: "First Name", required: true },
-      { name: "middleName", label: "Middle Name" },
-      { name: "lastName", label: "Last Name", required: true },
-      { name: "suffix", label: "Suffix" },
-      {
-        name: "gender",
-        label: "Gender",
-        type: "select",
-        options: ["Male", "Female", "Other"],
-        required: true,
-      },
-      { name: "street", label: "Street", required: true },
-      {
-        name: "barangay",
-        label: "Barangay",
-        type: "select",
-        options: barangayOptions,
-        required: true,
-      },
-      { name: "city", label: "City", required: true },
-      {
-        name: "contactNumber",
-        label: "Contact Number",
-        required: true,
-        pattern: /^[0-9]{10,11}$/,
-      },
-      {
-        name: "emailAddress",
-        label: "Email Address",
-        required: true,
-        pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-      },
-      { name: "tin", label: "TIN" },
-      {
-        name: "citizenship",
-        label: "Citizenship",
-        type: "select",
-        options: countries.map((country) => country.country),
-        required: true,
-      },
-    ],
-
-    "Business Information": [
-      { name: "businessName", label: "Business / Trade Name", required: true },
-      { name: "typeOfBusiness", label: "Type of Business" },
-      { name: "natureOfBusiness", label: "Nature / Line of Business" },
-      { name: "businessAddress", label: "Business Address" },
-      {
-        name: "ownershipType",
-        label: "Ownership Type",
-        type: "select",
-        options: [
-          "Single Proprietorship",
-          "Partnership",
-          "Corporation",
-          "Cooperative",
-          "Others",
-        ],
-      },
-      {
-        name: "areaOccupied",
-        label: "Area Occupied (sqm)",
-        type: "number",
-        min: 0,
-      },
-      { name: "floorLevel", label: "Floor Level" },
-    ],
-
-    "Property Details": [
-      { name: "lotNumber", label: "Lot / Block Number" },
-      { name: "propertyStreet", label: "Street" },
-      { name: "propertyBarangay", label: "Barangay" },
-      { name: "propertyCity", label: "City" },
-      {
-        name: "typeOfOccupancy",
-        label: "Type of Occupancy",
-        type: "select",
-        options: ["Owned", "Rented", "Leased"],
-      },
-      { name: "lotOwner", label: "Name of Lot Owner" },
-      {
-        name: "landUseClassification",
-        label:
-          "Land Use Classification (e.g. Commercial, Residential, Industrial)",
-      },
-      { name: "zoningClassification", label: "Zoning Classification" },
-      {
-        name: "numEmployees",
-        label: "Number of Employees",
-        type: "number",
-        min: 0,
-      },
-      {
-        name: "projectCost",
-        label: "Project Cost / Investment",
-        type: "number",
-        min: 0,
-      },
-    ],
-  };
-
-  const formatTIN = (value) => {
-    const numbers = value.replace(/\D/g, "").slice(0, 12); // only digits, max 12
-    return numbers.replace(/(\d{3})(?=\d)/g, "$1-").replace(/-$/, "");
-  };
-
-  const formatNumberWithCommas = (value) => {
-    if (!value) return "";
-    const num = value.toString().replace(/,/g, "");
-    return num.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
+  }
 
   const renderField = (field) => (
     <Grid item xs={12} sm={6} md={2.4} key={field.name}>
@@ -213,18 +71,22 @@ export default function App() {
             let value = e.target.value;
 
             if (field.name === "tin") {
-              value = formatTIN(value);
+              value = formatTin(value);
             } else if (field.name === "projectCost") {
-              value = formatNumberWithCommas(value);
+              value = formatNumber(value);
             }
-
             f.onChange(value);
           };
 
           const handleBlur = (e) => {
-            if (field.type !== "number" && field.type !== "select") {
-              const cleaned = cleanInput(e.target.value);
-              f.onChange(cleaned);
+            let value = e.target.value;
+
+            if (field.name === "emailAddress") {
+              // Trim spaces only for email
+              f.onChange(value.trim());
+            } else if (field.type !== "number" && field.type !== "select") {
+              // Clean input for other fields
+              f.onChange(cleanInput(value));
             }
           };
 
@@ -327,3 +189,5 @@ export default function App() {
     </Paper>
   );
 }
+
+export default App;
